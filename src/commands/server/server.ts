@@ -1,16 +1,17 @@
+import axios from "axios";
 import {
   CacheType,
   ChatInputCommandInteraction,
   MessageFlags,
   SlashCommandBuilder,
-  User,
+  SlashCommandOptionsOnlyBuilder,
 } from "discord.js";
 import { setTimeout } from "timers";
 
-export const data = new SlashCommandBuilder()
+export const data: SlashCommandOptionsOnlyBuilder = new SlashCommandBuilder()
   .setName("server")
   .setDescription("Game Server Manager")
-  .addUserOption((option) =>
+  .addStringOption((option) =>
     option
       .setName("start")
       .setDescription("Start selected game server")
@@ -26,18 +27,15 @@ export const data = new SlashCommandBuilder()
 export async function execute(
   interaction: ChatInputCommandInteraction<CacheType>,
 ): Promise<void> {
-  const user: User = interaction.options.getUser("user")!;
-  const curse = interaction.options.getString("curse");
+  const start = interaction.options.getString("start");
+  const stop = interaction.options.getString("stop");
+
   await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
-  if (interaction.isRepliable() && (curse || user))
-    await interaction.deleteReply();
+
+  if (interaction.isRepliable()) await interaction.deleteReply();
 
   if (interaction.channel?.isSendable()) {
-    if (curse && !user) await interaction.channel.send(curse);
-    if (curse && user)
-      await interaction.channel.send(`Oh Dear ${user}, \n${curse}`);
-    if (!curse && user) await interaction.channel.send(`Fuck you, ${user}`);
-    if (!curse && !user) {
+    if (start && stop) {
       await interaction.followUp({
         content: `${interaction.user}, Nigga You is stupid.`,
         flags: "Ephemeral",
@@ -47,5 +45,23 @@ export async function execute(
         if (interaction.isRepliable()) await interaction.deleteReply();
       }, 5 * 1000);
     }
+    if (start && !stop) {
+      await interaction.channel.send(start);
+    }
+
+    if (!start && stop) {
+      await interaction.channel.send(`Oh Dear \n${start}`);
+    }
+    if (!start && !stop) {
+      const servers = await getServerList();
+      await interaction.channel.send(`${servers.toString()}`);
+    }
   }
+}
+
+async function getServerList() {
+  const servers = await axios.get(
+    `${process.env.SERVER_URL ?? "localhost:3000"}/server`,
+  );
+  return servers;
 }

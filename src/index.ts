@@ -10,12 +10,12 @@ import {
   MessageFlags,
 } from "discord.js";
 import "dotenv/config";
-import fs from "fs";
-import path from "node:path";
+import * as fs from "fs";
+import * as path from "node:path";
 import { fileURLToPath, pathToFileURL } from "url";
 
 // Import Custom Types
-import { CLIENT, INTERACTION } from "#types";
+import { type CLIENT, type INTERACTION } from "@/types.ts";
 
 const rest = new REST({ version: "10" }).setToken(
   process.env.DISCORD_BOT_TOKEN!,
@@ -45,7 +45,7 @@ for (const folder of commandFolders) {
   const commandPath = path.join(foldersPath, folder);
   const commandFiles = fs
     .readdirSync(commandPath)
-    .filter((file) => file.endsWith(".ts"));
+    .filter((file : path) => file.endsWith(".ts"));
   for (let file of commandFiles) {
     const filePath: URL | null = pathToFileURL(path.join(commandPath, file));
     if (filePath) {

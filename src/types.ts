@@ -1,7 +1,6 @@
-import { CacheType, ChatInputCommandInteraction, Client, Collection, Interaction } from 'discord.js';
-import { CLIENT_RENEG_LIMIT } from 'node:tls';
+import { CacheType, ChatInputCommandInteraction, Client, Collection } from 'discord.js';
 
-export interface COMMAND {
+export type COMMAND = {
     name: string;
     description: string;
     type: number;
@@ -13,7 +12,7 @@ export interface COMMAND {
     }[];
 }
 
-export interface USER_PROFILE {
+export type USER_PROFILE = {
     avatar?: string;
     username: string;
     joinedAt: string;

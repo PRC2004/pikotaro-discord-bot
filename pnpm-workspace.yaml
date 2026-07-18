@@ -1,3 +1,4 @@
 allowBuilds:
   esbuild: true
   "@discordjs/voice": true
+  "@discordjs/voice@https://codeload.github.com/discordjs/voice/tar.gz/309ac8596cac422cf22e51331869e011c720124c": true
